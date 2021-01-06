@@ -32,6 +32,8 @@
         <div class="main-content">
             <div class="container">
                 <div class="row cart">
+                    <a href="admin.php" style="margin-right: 10px;">Quản lý sản phẩm</a>
+                    <a href="admin-cate.php">Quản lý category</a>
                     <div class="col-12">
                         <h3>Danh sách sản phẩm</h3>
                         <a href="them-san-pham.php">Thêm sản phẩm</a>

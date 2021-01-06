@@ -26,21 +26,26 @@
         $cates = select_list($sql_cate);
 
         if (isset($_POST["submit_create_prd"])) {
+
+            $target_dir = "./images/";
+            $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
+            // $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+            move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file);
+
             $name = $_POST["prd_name"];
             $amount = $_POST["amount"];
             $price = $_POST["price"];
             $discount = $_POST["discount"];
             $cate = $_POST["cate"];
-            $image = "./images/a220t-ala0013-mxx2-01_1.jpg";
+            $image = $target_file;
             
             $sql = "insert into products (image, name, amount, price, discount, cate_id) values ('$image', '$name', '$amount', '$price', '$discount', '$cate') ";
-            var_dump($sql);
+            // var_dump($sql);
             $result = exec_update($sql);
             
             if($result){
                 echo "Thêm sản phẩm thành công";
                 header('Refresh: 2; URL=/cnw-ngocboi/admin.php');
-
             }
         }
     ?>
@@ -52,15 +57,16 @@
                     <h3>Thêm sản phẩm</h3>
                     
                     <h4>Ảnh</h4>
-                    <form action="them-san-pham.php" method="post">
+                    <form action="them-san-pham.php" method="post" enctype="multipart/form-data">
                         <div class="thumb">
+                            <input type="file" name="fileToUpload" id="fileToUpload">
                             <img style="max-width: 150px;" src="" alt="">
                         </div>
                     
                         <div class="name feild_info">
-                                <label for="prd_name">Tên sản phẩm</label>
-                                <input type="text" name="prd_name" value="">
-                            </div>
+                            <label for="prd_name">Tên sản phẩm</label>
+                            <input type="text" name="prd_name" value="">
+                        </div>
                         <div class="amount feild_info">
                             <label for="amount">Số lượng</label>
                             <input type="number" name="amount" value="">

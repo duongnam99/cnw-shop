@@ -31,12 +31,19 @@
         $cates = select_list($sql_cate);
 
         if (isset($_POST["submit_update_prd"])) {
+
+            $target_dir = "./images/";
+            $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
+            // $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+            move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file);
+            // var_dump($_FILES);
+            $image = $target_file;  
             $name = $_POST["prd_name"];
             $amount = $_POST["amount"];
             $price = $_POST["price"];
             $discount = $_POST["discount"];
             
-            $sql = "update products set name='$name', amount='$amount', price='$price', discount='$discount' where id='$id' ";
+            $sql = "update products set image='$image', name='$name', amount='$amount', price='$price', discount='$discount' where id='$id' ";
             $result = exec_update($sql);
             if($result){
                 echo "Cập nhật sản phẩm thành công";
@@ -53,8 +60,9 @@
                     <h3>Sửa sản phẩm</h3>
                     
                     <h4>Ảnh</h4>
-                    <form action="sua-san-pham.php?id=<?php echo $id; ?>" method="post">
+                    <form action="sua-san-pham.php?id=<?php echo $id; ?>" method="post" enctype="multipart/form-data">
                         <div class="thumb">
+                            <input type="file" name="fileToUpload" id="fileToUpload">
                             <img style="max-width: 150px;" src="<?php echo $product['image']; ?>" alt="">
                         </div>
                     

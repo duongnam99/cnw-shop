@@ -13,7 +13,7 @@
        if($rs){
            echo "Xóa sản phẩm thành công";
 
-           header('Refresh: 2; URL=/cnw-boiboi/admin.php');
+           header('Refresh: 2; URL=/cnw-ngocboi/admin.php');
 
        }else{
             echo "Xóa sản phẩm thất bại";

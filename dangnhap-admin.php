@@ -21,12 +21,6 @@
 
 <body>
 
-    <!-- <?php var_dump($products); ?>  -->
-    <!-- <?php var_dump($cates); ?>  -->
-    <!-- <?php var_dump($_SESSION); ?>  -->
-
- 
-
     <div class="model-login-regis" >
         <div class="model-body">
         <form class="form-login" action="dangnhap.php" method="post" >
@@ -45,8 +39,6 @@
           </div>
       
       </form>
-
-    
     </div>
 
     <script src="js/main.js"></script>
