@@ -7,25 +7,37 @@ $sql_cates = "select * from categories where parent_id is null";
 $products = select_list($sql_products);
 $cates = select_list($sql_cates);
 foreach ($cates as $key => $cate) {
+
+
     $sql_child_cates = "select * from categories where parent_id={$cate['id']}";
     $child_cates = select_list($sql_child_cates);
     $cates[$key]['childs'] = $child_cates;
 
+    $child_cates_id = [];
     $demo_parent_cate = [];
     foreach ($child_cates as $i => $child_cate) {
-        $sql_products_cate = "select * from products where cate_id={$child_cate['id']} limit 4";
-        $products_cate = select_list($sql_products_cate);
+        $child_cates_id[] = $child_cate['id'];
+        // $sql_products_cate = "select * from products where cate_id={$child_cate['id']} limit 4";
+        // $products_cate = select_list($sql_products_cate);
 
-        $demo_parent_cate = array_merge($demo_parent_cate, $products_cate);
-        if (count($demo_parent_cate) > 4) {
-            break;
-        }
+        // $demo_parent_cate = array_merge($demo_parent_cate, $products_cate);
+        // if (count($demo_parent_cate) > 4) {
+        //     break;
+        // }
     }
+    // chuyển aray thành dạng chuỗi kiểu "1, 3, 5, 4" ... để đưa vào câu truy vấn
+    $ids_to_sql = implode(',', array_map('intval', $child_cates_id));
+
+    $sql_products_cate = "select * from products where cate_id in ($ids_to_sql)  limit 4";
+    // var_dump($sql_products_cate);
+
+    $demo_parent_cate = select_list($sql_products_cate);
+
 
     $cates[$key]['demo'] = $demo_parent_cate;
 }
 
-
+// var_dump($cates);
 ?>
 
 <!DOCTYPE html>
@@ -66,10 +78,10 @@ foreach ($cates as $key => $cate) {
                                             <?php foreach ($cates as $key => $cate) { ?>
 
                                                 <div style="flex: 1">
-                                                    <h4 class="cate_2"><?php echo $cate["name"]; ?></h4>
+                                                    <h4 class="cate_2"><a href="san-pham-theo-loai.php?id=<?php echo $cate['id'] ?>"><?php echo $cate["name"]; ?></a></h4>
                                                     <ul class="list_cate_2">
                                                         <?php foreach ($cate["childs"] as $i => $cate_child) { ?>
-                                                            <li><a href=""><?php echo $cate_child["name"]; ?></a></li>
+                                                            <li><a href="san-pham-theo-loai.php?id=<?php echo $cate_child['id'] ?>"><?php echo $cate_child["name"]; ?></a></li>
                                                         <?php } ?>
                                                     </ul>
 
@@ -135,16 +147,16 @@ foreach ($cates as $key => $cate) {
                             <div class="cate-items">
                                 <?php foreach ($cate['demo'] as $i => $product) { ?>
                                     <div class="item item-product">
-                                        <a href="chitietsanpham.html" class="thumb">
+                                        <a href="chi-tiet-san-pham.php?id=<?php echo $product['id']; ?>" class="thumb">
                                             <img src="<?php echo $product['image']; ?>" alt="">
                                         </a>
                                         <div class="content">
                                             <div class="wrap-name-price">
-                                                <a href="" class="name"><?php echo $product['name'] ?></a>
+                                                <a href="chi-tiet-san-pham.php?id=<?php echo $product['id']; ?>" class="name"><?php echo $product['name'] ?></a>
                                                 <div class="new-price"><?php
-                                                                        if ($product['discount'] != null)
-                                                                            echo $product['price'] * (100 - $product['discount']) / 100;
-                                                                        ?> ₫</div>
+                                                    if ($product['discount'] != null)
+                                                        echo $product['price'] * (100 - $product['discount']) / 100;
+                                                    ?> ₫</div>
                                                 <div class="old-price"><?php echo $product['price']; ?> ₫</div>
                                             </div>
                                             <div class="like"><i class="fa fa-heart-o" aria-hidden="true"></i></div>
@@ -169,40 +181,40 @@ foreach ($cates as $key => $cate) {
                     </div>
                     <div class="cate-items">
                         <div class="wrap-left">
-                            <?php foreach ($products as $key => $product) { ?>
+                            <?php foreach ($products as $key => $product) { 
+                                   if ($key > 3) break;
+                                ?>
                                 <div href class="item item-product">
-                                    <a href="" class="thumb">
+                                    <a href="chi-tiet-san-pham.php?id=<?php echo $product['id']; ?>" class="thumb">
                                         <img src="<?php echo $product['image'] ?>" alt="">
                                     </a>
                                     <div class="content">
                                         <div class="wrap-name-price">
-                                            <a href="" class="name"><?php echo $product['name'] ?></a>
+                                            <a href="chi-tiet-san-pham.php?id=<?php echo $product['id']; ?>" class="name"><?php echo $product['name'] ?></a>
                                             <div class="new-price"><?php
-                                                                    if ($product['discount'] != null)
-                                                                        echo $product['price'] * (100 - $product['discount']) / 100;
-                                                                    ?> ₫</div>
+                                                if ($product['discount'] != null)
+                                                    echo $product['price'] * (100 - $product['discount']) / 100;
+                                                ?> ₫</div>
                                             <div class="old-price"><?php echo $product['price'] ?> ₫</div>
                                         </div>
                                         <div class="like"><i class="fa fa-heart-o" aria-hidden="true"></i></div>
                                     </div>
                                 </div>
 
-                            <?php
-                                if ($key > 4) break;
-                            } ?>
+                            <?php } ?>
                         </div>
                         <div class="wrap-right">
                             <div href class="item item-product prd-sp">
-                                <a href="" class="thumb">
+                                <a href="chi-tiet-san-pham.php?id=<?php echo $products[4]['id']; ?>" class="thumb">
                                     <img src="<?php echo $products[4]['image'] ?>" alt="">
                                 </a>
                                 <div class="content">
                                     <div class="wrap-name-price">
-                                        <a href="" class="name"><?php echo $products[4]['name'] ?></a>
+                                        <a href="chi-tiet-san-pham.php?id=<?php echo $products[4]['id']; ?>" class="name"><?php echo $products[4]['name'] ?></a>
                                         <div class="new-price"><?php
-                                                                if ($products[4]['discount'] != null)
-                                                                    echo $products[4]['price'] * (100 - $products[4]['discount']) / 100;
-                                                                ?> ₫</div>
+                                            if ($products[4]['discount'] != null)
+                                                echo $products[4]['price'] * (100 - $products[4]['discount']) / 100;
+                                            ?> ₫</div>
                                         <div class="old-price"><?php echo $products[4]['price'] ?> ₫</div>
                                     </div>
                                     <div class="like"><i class="fa fa-heart-o" aria-hidden="true"></i></div>
